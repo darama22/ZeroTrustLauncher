@@ -1,5 +1,120 @@
 # Zero-Trust Launcher
 
+**Pre-Execution Malware Analyzer for Windows**
+
+Static analysis tool that evaluates executables for malicious behavior before execution. Combines Shannon entropy analysis, PE import scanning, and PyInstaller bytecode detection.
+
+---
+
+## Features
+
+- **Shannon Entropy Analysis** - Detects packed/encrypted malware
+- **PE Import Scanning** - Identifies suspicious Windows API calls  
+- **PyInstaller Detection** - Analyzes embedded Python bytecode
+- **Educational Explanations** - Detailed vulnerability descriptions
+- **Risk Scoring** - 0-100 scale (LOW/MEDIUM/HIGH)
+
+---
+
+## Installation
+
+```bash
+git clone https://github.com/darama22/ZeroTrustLauncher.git
+cd ZeroTrustLauncher
+pip install -r requirements.txt
+python launcher.py
+```
+
+**Requirements:** Python 3.7+, Windows OS
+
+---
+
+## Usage
+
+1. Launch: `python launcher.py`
+2. Select an executable (Browse or drag-and-drop)
+3. Review risk score and detected APIs
+4. Click "View Detailed Explanations" for educational content
+
+---
+
+## Validation Results
+
+| Test File | Type | Risk Score | Result |
+|-----------|------|------------|--------|
+| `calc.exe` | Legitimate utility | 0/100 (LOW) | ✅ |
+| `Valorant.exe` | Game with anti-cheat | 31/100 (MEDIUM) | ✅ |
+| `Cheat Engine` | Memory editor | 28/100 (MEDIUM) | ✅ |
+| `malware_test.exe` | PyInstaller malware | 56/100 (HIGH) | ✅ |
+| `msfvenom payload` | Advanced shellcode | 0/100 (LOW) | ⚠️ * |
+
+**\* Known limitation:** Advanced shellcode with API hashing requires dynamic analysis.
+
+---
+
+## How It Works
+
+### 1. Shannon Entropy
+- High entropy (>7.2) → Packed/encrypted
+- Normal entropy (<6.8) → Standard executable
+
+### 2. PE Import Scanning
+- **CRITICAL:** `WriteProcessMemory`, `CreateRemoteThread`, `GetAsyncKeyState`
+- **HIGH:** `VirtualAlloc`, `AdjustTokenPrivileges`, `exec`, `eval`
+- **MEDIUM:** `CreateToolhelp32Snapshot`, `subprocess`
+
+### 3. PyInstaller Detection
+Scans for: `ctypes`, `subprocess`, `eval`, `exec`, Windows API strings
+
+### 4. Risk Scoring
+```
+Total Score = Entropy Penalty + API Penalties
+LOW: 0-25 | MEDIUM: 26-50 | HIGH: 51-100
+```
+
+---
+
+## Limitations
+
+**Static analysis only** - Cannot detect:
+- Advanced shellcode with API hashing (msfvenom, Cobalt Strike)
+- Polymorphic malware
+- Fileless malware
+- Obfuscated imports using dynamic resolution
+
+**Recommended for:** Pre-screening executables, educational analysis, detecting common malware families  
+**Not recommended for:** APTs, zero-days, replacing professional antivirus
+
+---
+
+## Project Structure
+
+```
+ZeroTrustLauncher/
+├── launcher.py              # Entry point
+├── modules/
+│   ├── core_analyzer.py     # PE + entropy analysis
+│   ├── pyinstaller_analyzer.py
+│   └── vulnerability_explanations.py
+├── ui/main_window.py        # GUI
+└── dist/malware_test.exe    # Test sample
+```
+
+---
+
+## License
+
+Educational purposes only. Do not use to analyze or distribute actual malware without proper authorization.
+
+---
+
+## Acknowledgments
+
+- **pefile** library for PE parsing
+- **Shannon entropy** algorithm for packing detection
+- **MITRE ATT&CK** framework for threat categorization
+
+
 **Pre-Execution Malware Analyzer**
 
 A static analysis tool that evaluates Windows executables for malicious behavior **before** execution. Uses Shannon entropy analysis, PE import scanning, and PyInstaller bytecode detection to assign risk scores.
