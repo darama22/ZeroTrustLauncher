@@ -37,7 +37,6 @@ env/
 Thumbs.db
 
 # Project specific
-*.exe
 *.dll
 *.pyd
 reverse_shell.exe
@@ -45,3 +44,6 @@ shell.exe
 
 # Keep the test sample
 !dist/malware_test.exe
+
+# Keep GIFs
+!*.gif

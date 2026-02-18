@@ -2,6 +2,10 @@
 
 Pre-execution malware analyzer using static analysis (Shannon entropy, PE imports, PyInstaller detection).
 
+![Demo](Animation.gif)
+
+
+
 ## Quick Start
 
 ```bash
